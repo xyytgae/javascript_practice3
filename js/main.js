@@ -20,6 +20,59 @@
     // 開始ボタンの消去
     start.style.display = "none";
 
+    class quizSet {
+      constructor() {
+        welcome.textContent = "問題" + (number + 1);
+        // ジャンル、難易度、問題の表示
+        category.textContent += text.results[number].category;
+        difficulty.textContent += text.results[number].difficulty;
+
+        // 特殊文字の置き換え
+        const question = text.results[number].question;
+        function replacement(question) {
+          return question
+          .replace(/&quot;/g, '"')
+          .replace(/&ldquo;/g, '“')
+          .replace(/&rdquo;/g, '”')
+          .replace(/&#039;/g, "'")
+          .replace(/&amp;/g, '&')
+          .replace(/&eacute;/g, 'é')
+          .replace(/&uuml;/g, 'ü');
+        }
+        content_display.textContent = replacement(question);
+
+        const choices = [];
+
+        // 正解の選択肢をchoicesにプッシュ
+        choices.push(text.results[number].correct_answer);
+
+        // 不正解の選択肢をchoicesにプッシュ
+        for (let i = 0; i < text.results[number].incorrect_answers.length; i++) {
+          choices.push(text.results[number].incorrect_answers[i]);
+        }
+
+        // choicesをシャッフル
+        for (let i = choices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [choices[j], choices[i]] = [choices[i], choices[j]];
+        }
+
+        // 選択肢のボタンを生成
+        choices.forEach(value => {
+          const choice_button = document.createElement('button');
+          const newDiv = document.createElement('div');
+          choice_button.type = 'button';
+          choice_button.textContent = value;
+          choice_button.addEventListener('click', () => {
+            if (choice_button.textContent === text.results[number].correct_answer) {
+              countCorrect ++;
+            }
+          });
+          newDiv.appendChild(choice_button);
+          choices_display.appendChild(newDiv);
+        });
+      }
+    }
     // API取得
     fetch('https://opentdb.com/api.php?amount=10')
     .then(response => {
@@ -29,59 +82,6 @@
       let number = 0;
       question_kind.style.display = "block";
 
-      class quizSet {
-        constructor() {
-          welcome.textContent = "問題" + (number + 1);
-          // ジャンル、難易度、問題の表示
-          category.textContent += text.results[number].category;
-          difficulty.textContent += text.results[number].difficulty;
-
-          // 特殊文字の置き換え
-          const question = text.results[number].question;
-          function replacement(question) {
-            return question
-            .replace(/&quot;/g, '"')
-            .replace(/&ldquo;/g, '“')
-            .replace(/&rdquo;/g, '”')
-            .replace(/&#039;/g, "'")
-            .replace(/&amp;/g, '&')
-            .replace(/&eacute;/g, 'é')
-            .replace(/&uuml;/g, 'ü');
-          }
-          content_display.textContent = replacement(question);
-
-          let choices = [];
-
-          // 正解の選択肢をchoicesにプッシュ
-          choices.push(text.results[number].correct_answer);
-
-          // 不正解の選択肢をchoicesにプッシュ
-          for (let i = 0; i < text.results[number].incorrect_answers.length; i++) {
-            choices.push(text.results[number].incorrect_answers[i]);
-          }
-
-          // choicesをシャッフル
-          for (let i = choices.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [choices[j], choices[i]] = [choices[i], choices[j]];
-          }
-
-          // 選択肢のボタンを生成
-          choices.forEach(value => {
-            const choice_button = document.createElement('button');
-            const newDiv = document.createElement('div');
-            choice_button.type = 'button';
-            choice_button.textContent = value;
-            choice_button.addEventListener('click', () => {
-              if (choice_button.textContent === text.results[number].correct_answer) {
-                countCorrect ++;
-              }
-            });
-            newDiv.appendChild(choice_button);
-            choices_display.appendChild(newDiv);
-          });
-        }
-      }
       const firstQuiz = new quizSet();
 
       // ２問目以降の表示
@@ -110,5 +110,4 @@
       });
     });
   });
-
 }
