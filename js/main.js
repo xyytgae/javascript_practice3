@@ -12,14 +12,6 @@
   // [ジャンル][難易度]要素の非表示
   question_kind.style.display = "none";
 
-  start.addEventListener('click', () => {
-    welcome.textContent = "取得中";
-    content_display.textContent = "少々お待ちください";
-    let countCorrect = 0;
-
-    // 開始ボタンの消去
-    start.style.display = "none";
-
     class quizSet {
       constructor() {
         welcome.textContent = "問題" + (number + 1);
@@ -73,13 +65,21 @@
         });
       }
     }
+  start.addEventListener('click', () => {
+    welcome.textContent = "取得中";
+    content_display.textContent = "少々お待ちください";
+    let countCorrect = 0;
+    let number = 0;
+
+    // 開始ボタンの消去
+    start.style.display = "none";
+
     // API取得
     fetch('https://opentdb.com/api.php?amount=10')
     .then(response => {
       return response.json();
     })
     .then(text => {
-      let number = 0;
       question_kind.style.display = "block";
 
       const firstQuiz = new quizSet();
