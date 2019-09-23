@@ -12,9 +12,56 @@
   // [ジャンル][難易度]要素の非表示
   question_kind.style.display = "none";
 
+  start.addEventListener('click', () => {
+    welcome.textContent = "取得中";
+    content_display.textContent = "少々お待ちください";
+    let countCorrect = 0;
+
+    // 開始ボタンの消去
+    start.style.display = "none";
+
+    // API取得
+    fetch('https://opentdb.com/api.php?amount=10')
+    .then(response => {
+      return response.json();
+    })
+    .then(text => {
+      question_kind.style.display = "block";
+
+      let number = 0;
+      category.textContent += text.results[number].category;
+      difficulty.textContent += text.results[number].difficulty;
+      const firstQuiz = new quizSet();
+
+      // ２問目以降の表示
+      choices_display.addEventListener('click', () => {
+        number++;
+        if(number < text.results.length) {
+          category.textContent = '[ジャンル]';
+          difficulty.textContent = '[難易度]';
+          content_display.textContent = '';
+          choices_display.textContent = '';
+          const secondQuiz = new quizSet();
+        }else{
+          welcome.textContent = `あなたの正解数は${countCorrect}です！！`;
+          content_display.textContent = '再度チャレンジしたい場合は以下をクリック';
+          category.textContent = '';
+          difficulty.textContent = '';
+          choices_display.textContent = '';
+          const homeButton = document.createElement('button');
+          homeButton.type = 'button';
+          homeButton.textContent = 'ホームに戻る';
+          homeButton.addEventListener('click', () => {
+            location.href = 'index.html';
+          });
+          choices_display.appendChild(homeButton);
+        }
+      });
+    });
+  });
     class quizSet {
       constructor() {
-        welcome.textContent = "問題" + (number + 1);
+        welcome.textContent = "問題" + (0 + 1);
         // ジャンル、難易度、問題の表示
         category.textContent += text.results[number].category;
         difficulty.textContent += text.results[number].difficulty;
@@ -65,49 +112,4 @@
         });
       }
     }
-  start.addEventListener('click', () => {
-    welcome.textContent = "取得中";
-    content_display.textContent = "少々お待ちください";
-    let countCorrect = 0;
-    let number = 0;
-
-    // 開始ボタンの消去
-    start.style.display = "none";
-
-    // API取得
-    fetch('https://opentdb.com/api.php?amount=10')
-    .then(response => {
-      return response.json();
-    })
-    .then(text => {
-      question_kind.style.display = "block";
-
-      const firstQuiz = new quizSet();
-
-      // ２問目以降の表示
-      choices_display.addEventListener('click', () => {
-        number++;
-        if(number < text.results.length) {
-          category.textContent = '[ジャンル]';
-          difficulty.textContent = '[難易度]';
-          content_display.textContent = '';
-          choices_display.textContent = '';
-          const secondQuiz = new quizSet();
-        }else{
-          welcome.textContent = `あなたの正解数は${countCorrect}です！！`;
-          content_display.textContent = '再度チャレンジしたい場合は以下をクリック';
-          category.textContent = '';
-          difficulty.textContent = '';
-          choices_display.textContent = '';
-          const homeButton = document.createElement('button');
-          homeButton.type = 'button';
-          homeButton.textContent = 'ホームに戻る';
-          homeButton.addEventListener('click', () => {
-            location.href = 'index.html';
-          });
-          choices_display.appendChild(homeButton);
-        }
-      });
-    });
-  });
 }
