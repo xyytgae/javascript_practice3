@@ -24,23 +24,23 @@
     .then(response => {
       return response.json();
     })
-    .then(text => {
+    .then(quizObj => {
       question_kind.style.display = "block";
 
       let countCorrect = 0;
       let number = 0;
-      const firstQuiz = new quizSet(text, countCorrect, number);
+      const firstQuiz = new quizSet(quizObj, countCorrect, number);
 
       // ２問目以降の表示
       choices_display.addEventListener('click', () => {
         number++;
         console.log(countCorrect);
-        if(number < text.results.length) {
+        if(number < quizObj.results.length) {
           category.textContent = '[ジャンル]';
           difficulty.textContent = '[難易度]';
           content_display.textContent = '';
           choices_display.textContent = '';
-          const secondQuiz = new quizSet(text, countCorrect, number);
+          const secondQuiz = new quizSet(quizObj, countCorrect, number);
         }else{
           welcome.textContent = `あなたの正解数は${countCorrect}です！！`;
           content_display.textContent = '再度チャレンジしたい場合は以下をクリック';
@@ -59,14 +59,14 @@
     });
   });
     class quizSet {
-      constructor(text, countCorrect, number) {
+      constructor(quizObj, countCorrect, number) {
         welcome.textContent = "問題" + (number + 1);
         // ジャンル、難易度、問題の表示
-        category.textContent += text.results[number].category;
-        difficulty.textContent += text.results[number].difficulty;
+        category.textContent += quizObj.results[number].category;
+        difficulty.textContent += quizObj.results[number].difficulty;
 
         // 特殊文字の置き換え
-        const question = text.results[number].question;
+        const question = quizObj.results[number].question;
         function replacement(question) {
           return question
           .replace(/&quot;/g, '"')
@@ -82,11 +82,11 @@
         const choices = [];
 
         // 正解の選択肢をchoicesにプッシュ
-        choices.push(text.results[number].correct_answer);
+        choices.push(quizObj.results[number].correct_answer);
 
         // 不正解の選択肢をchoicesにプッシュ
-        for (let i = 0; i < text.results[number].incorrect_answers.length; i++) {
-          choices.push(text.results[number].incorrect_answers[i]);
+        for (let i = 0; i < quizObj.results[number].incorrect_answers.length; i++) {
+          choices.push(quizObj.results[number].incorrect_answers[i]);
         }
 
         // choicesをシャッフル
@@ -104,7 +104,7 @@
           newDiv.appendChild(choice_button);
           choices_display.appendChild(newDiv);
           choice_button.addEventListener('click', () => {
-            if (choice_button.textContent === text.results[number].correct_answer) {
+            if (choice_button.textContent === quizObj.results[number].correct_answer) {
               countCorrect++;
               console.log(countCorrect);
             }
