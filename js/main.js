@@ -15,7 +15,6 @@
   start.addEventListener('click', () => {
     welcome.textContent = "取得中";
     content_display.textContent = "少々お待ちください";
-    let countCorrect = 0;
 
     // 開始ボタンの消去
     start.style.display = "none";
@@ -28,20 +27,20 @@
     .then(text => {
       question_kind.style.display = "block";
 
+      let countCorrect = 0;
       let number = 0;
-      category.textContent += text.results[number].category;
-      difficulty.textContent += text.results[number].difficulty;
-      const firstQuiz = new quizSet();
+      const firstQuiz = new quizSet(text, countCorrect, number);
 
       // ２問目以降の表示
       choices_display.addEventListener('click', () => {
         number++;
+        console.log(countCorrect);
         if(number < text.results.length) {
           category.textContent = '[ジャンル]';
           difficulty.textContent = '[難易度]';
           content_display.textContent = '';
           choices_display.textContent = '';
-          const secondQuiz = new quizSet();
+          const secondQuiz = new quizSet(text, countCorrect, number);
         }else{
           welcome.textContent = `あなたの正解数は${countCorrect}です！！`;
           content_display.textContent = '再度チャレンジしたい場合は以下をクリック';
@@ -60,8 +59,8 @@
     });
   });
     class quizSet {
-      constructor() {
-        welcome.textContent = "問題" + (0 + 1);
+      constructor(text, countCorrect, number) {
+        welcome.textContent = "問題" + (number + 1);
         // ジャンル、難易度、問題の表示
         category.textContent += text.results[number].category;
         difficulty.textContent += text.results[number].difficulty;
@@ -102,13 +101,14 @@
           const newDiv = document.createElement('div');
           choice_button.type = 'button';
           choice_button.textContent = value;
-          choice_button.addEventListener('click', () => {
-            if (choice_button.textContent === text.results[number].correct_answer) {
-              countCorrect ++;
-            }
-          });
           newDiv.appendChild(choice_button);
           choices_display.appendChild(newDiv);
+          choice_button.addEventListener('click', () => {
+            if (choice_button.textContent === text.results[number].correct_answer) {
+              countCorrect++;
+              console.log(countCorrect);
+            }
+          });
         });
       }
     }
