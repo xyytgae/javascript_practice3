@@ -11,6 +11,11 @@
 
   // [ジャンル][難易度]要素の非表示
   question_kind.style.display = "none";
+  let countCorrect = 0;
+
+  function count() {
+    countCorrect++;
+  }
 
   start.addEventListener('click', () => {
     welcome.textContent = "取得中";
@@ -27,14 +32,14 @@
     .then(quizObj => {
       question_kind.style.display = "block";
 
-      let countCorrect = 0;
       let number = 0;
+      console.log(quizObj);
       const firstQuiz = new quizSet(quizObj, countCorrect, number);
 
       // ２問目以降の表示
       choices_display.addEventListener('click', () => {
         number++;
-        console.log(countCorrect);
+        // console.log(countCorrect);
         if(number < quizObj.results.length) {
           category.textContent = '[ジャンル]';
           difficulty.textContent = '[難易度]';
@@ -105,8 +110,7 @@
           choices_display.appendChild(newDiv);
           choice_button.addEventListener('click', () => {
             if (choice_button.textContent === quizObj.results[number].correct_answer) {
-              countCorrect++;
-              console.log(countCorrect);
+              count();
             }
           });
         });
