@@ -39,7 +39,6 @@
       // ２問目以降の表示
       choices_display.addEventListener('click', () => {
         number++;
-        // console.log(countCorrect);
         if(number < quizObj.results.length) {
           category.textContent = '[ジャンル]';
           difficulty.textContent = '[難易度]';
