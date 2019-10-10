@@ -11,11 +11,7 @@
 
   // [ジャンル][難易度]要素の非表示
   question_kind.style.display = "none";
-  let countCorrect = 0;
-
-  function count() {
-    countCorrect++;
-  }
+  let countCorrect2 = 0;
 
   start.addEventListener('click', () => {
     welcome.textContent = "取得中";
@@ -34,7 +30,7 @@
 
       let number = 0;
       console.log(quizObj);
-      const firstQuiz = new quizSet(quizObj, countCorrect, number);
+      const firstQuiz = new quizSet(quizObj, number);
 
       // ２問目以降の表示
       choices_display.addEventListener('click', () => {
@@ -44,9 +40,9 @@
           difficulty.textContent = '[難易度]';
           content_display.textContent = '';
           choices_display.textContent = '';
-          const secondQuiz = new quizSet(quizObj, countCorrect, number);
+          const secondQuiz = new quizSet(quizObj, number);
         }else{
-          welcome.textContent = `あなたの正解数は${countCorrect}です！！`;
+          welcome.textContent = `あなたの正解数は${countCorrect2}です！！`;
           content_display.textContent = '再度チャレンジしたい場合は以下をクリック';
           category.textContent = '';
           difficulty.textContent = '';
@@ -63,7 +59,7 @@
     });
   });
     class quizSet {
-      constructor(quizObj, countCorrect, number) {
+      constructor(quizObj, number) {
         welcome.textContent = "問題" + (number + 1);
         // ジャンル、難易度、問題の表示
         category.textContent += quizObj.results[number].category;
@@ -109,7 +105,7 @@
           choices_display.appendChild(newDiv);
           choice_button.addEventListener('click', () => {
             if (choice_button.textContent === quizObj.results[number].correct_answer) {
-              count();
+              countCorrect2++;
             }
           });
         });
